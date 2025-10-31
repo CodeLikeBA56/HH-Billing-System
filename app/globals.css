@@ -1,13 +1,24 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg-color: #fdfdfd;
+  --main-color: #08a4a7;
+  --white-color: #fdfdfd;
+  --primary-text-color: #333;
+  --secondary-text-color: #555;
+  --border-color: rgba(0, 0, 0, .2);
+  --shadow-color: rgba(0, 0, 0, .1);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-main: var(--main-color);
+  --color-white: var(--white-color);
+  --color-background: var(--bg-color);
+  --color-border-color: var(--border-color);
+  --color-shadow-color: var(--shadow-color);
+  --color-primary-text: var(--primary-text-color);
+  --color-secondary-text: var(--secondary-text-color);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -19,8 +30,107 @@
   }
 }
 
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  border: none;
+  outline: none;
+  background: none;
+  box-sizing: border-box;
+  transition: .5s ease-in-out;
+}
+
 body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.dark-mode {
+  --bg-color: #111;
+  --primary-text-color: #fdfdfd;
+  --border-color: rgba(255, 255, 255, .2);
+  --shadow-color: rgba(255, 255, 255, .2);
+}
+
+
+button {
+  min-width: 45px;
+  height: 45px;
+  border: none;
+  outline: none;
+  gap: 5px;
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+}
+
+label {
+  /* padding-left: 15px; */
+  font-size: 14px;
+  font-weight: 600;
+}
+
+input {
+  width: 100%;
+  height: 40px;
+  outline: none;
+  font-size: 14px;
+  padding: 0 15px;
+  border-radius: 50px;
+  border: 1px solid var(--shadow-color);
+}
+
+textarea {
+  resize: none;
+  outline: none;
+  font-size: 14px;
+  min-height: 80px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--shadow-color);
+}
+
+input:focus, textarea:focus {
+  border-color: var(--text-color);
+}
+
+.icon-field {
+  display: flex;
+  position: relative;
+}
+
+.form-input ~ .input-validity-check, .icon-field .form-input ~ .input-validity-check {
+  opacity: 0;
+  position: absolute;
+}
+
+.form-input:valid ~ .input-validity-check {
+  width: 20px;
+  height: 20px;
+  font-size: 18px;
+  left: -25px;
+  top: -22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: var(--main-color);
+  opacity: 1;
+  transition: opacity .3s ease;
+}
+
+.form-input:focus ~ .input-validity-check {
+  opacity: 0;
+}
+
+.show-error {
+  margin-top: 2px;
+  font-size: 12px;
+  font-weight: 500;
+  height: 20px;
+  visibility: visible;
+  color: var(--secondary-text-color);
+  transition: opacity .3s ease;
 }
