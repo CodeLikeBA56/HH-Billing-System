@@ -23,26 +23,12 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-*, *::before, *::after {
-  margin: 0;
-  padding: 0;
-  border: none;
-  outline: none;
-  background: none;
-  box-sizing: border-box;
-  transition: .5s ease-in-out;
-}
-
 body {
-  color: var(--foreground);
-  background: var(--background);
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  color: var(--primary-text-color);
+  background: var(--bg-color);
   font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -53,17 +39,22 @@ body {
   --shadow-color: rgba(255, 255, 255, .2);
 }
 
-
 button {
+  padding: 0 10px;
   min-width: 45px;
-  height: 45px;
+  min-height: 45px;
   border: none;
-  outline: none;
+  /* outline: none; */
   gap: 5px;
   display: flex;
   cursor: pointer;
   align-items: center;
   justify-content: center;
+  font-weight: 600;
+  font-size: 15px;
+  border-radius: 8px;
+  color: var(--white-color);
+  background: var(--main-color);
 }
 
 label {

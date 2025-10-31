@@ -1,0 +1,80 @@
+.form, .sign-in-form {
+    width: 400px;
+    padding: 20px 30px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 16px;
+    margin-left: auto;
+    margin-right: auto;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    gap: 5px;
+    overflow: hidden;
+}
+  
+.header {
+    font-size: 2rem;
+    font-weight: 1000;
+    text-align: center;
+}
+  
+.field {
+    gap: 1px;
+    display: flex;
+    position: relative;
+    flex-direction: column;
+}
+
+.show-pass-btn {
+    position: absolute;
+    top: 50%;
+    right: 0px;
+    transform: translateY(-50%);
+    color: var(--text-color);
+}
+  
+.sign-up-btn, .sign-in-btn, .sign-in-with-email-btn {
+    text-align: center;
+    padding: 10px;
+    border-radius: 50px;
+    color: white;
+    background: var(--main-color);
+    border: none;
+    outline: none;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.sign-in-with-email-btn {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-color);
+    background: var(--shadow-color);
+}
+
+.sign-in-with-email-btn:hover {
+    color: var(--white-color);
+    background: var(--main-color);
+}
+
+.forgot-password-link, .sign-in-form-link, .sign-up-form-link {
+    font-size: 13px;
+    margin: 7px auto;
+}
+
+.forgot-password-link:hover, .sign-in-form-link:hover, .sign-up-form-link:hover {
+    text-decoration: underline;
+}
+
+.sign-in-form-link, .sign-up-form-link {
+    margin: 9px auto 0;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.alternative-option-message {
+    font-size: 16px;
+    margin: 2px auto;
+    color: var(--text-color);
+}

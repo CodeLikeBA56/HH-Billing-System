@@ -1,0 +1,131 @@
+.notification-stack {
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+    scroll-behavior: smooth;
+    padding: 20px;
+    width: max-content;
+    min-height: 100px;
+    max-height: 100vh;
+    max-height: 100dvh;
+    height: max-content;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    background: var(shadow-color);
+}
+
+.alert-container {
+    padding: 10px;
+    min-width: 350px;
+    max-width: max-content;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    /* opacity: 0; */
+    /* visibility: hidden; */
+    border: 2px solid;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+    color: var(--notification-primary);
+    border-color: var(--notification-border);
+    background-color: var(--notification-bg);
+    /* animation: fade-in 3s linear; */
+    z-index: 9999;
+}
+
+.notification-content {
+    gap: 8px;
+    width: 100%;
+    display: flex;
+    padding-bottom: 5px;
+    align-items: flex-start;
+}
+
+.close-notification-btn {
+    min-width: 25px;
+    height: 25px;
+    border-radius: 50px;
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--notification-primary);
+}
+
+.close-notification-btn span {
+    font-size: 18px;
+    color: var(--notification-bg);
+}
+
+.notification--success {
+    --notification-bg: #EBF7EE;
+    --notification-border: #3FBF62;
+    --notification-primary: #3FBF62;
+}
+
+.notification--failure {
+    --notification-bg: #FCEDEA;
+    --notification-border: #EC4E2C;
+    --notification-primary: #EC4E2C;
+}
+
+.notification--warning {
+    --notification-bg: #FEF7EA;
+    --notification-border: #EF9400;
+    --notification-primary: #EF9400;
+}
+
+.notification--info {
+    --notification-bg: #E5EFFA;
+    --notification-border: #016BE1;
+    --notification-primary: #016BE1;
+}
+
+.material-symbols-outlined {
+    font-size: 24px;
+    color: var(--notification-primary);
+}
+
+.notification-content p {
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--notification-primary);
+}
+
+.notification-progress {
+    width: 100%;
+    height: 2px;
+    transform: scaleX(0);
+    transform-origin: left;
+    border-radius: inherit;
+    animation: progress 3s .3s linear;
+    background: linear-gradient(to right, var(--notification-bg), var(--notification-border));
+}
+
+@keyframes progress {
+    to {
+        transform: scaleX(1);
+    }
+}
+
+@keyframes fade-in {
+    5% {
+        opacity: 1;
+        visibility: visible;
+    }
+    95% {
+        opacity: 1;
+    }
+}
+
+/* @media screen and (max-width: 700px) {
+    .alert-container {
+        top: 81.5px;
+        left: 50%;
+        bottom: unset;
+        transform: translateX(-50%);
+    }
+} */
