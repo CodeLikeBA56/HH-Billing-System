@@ -6,7 +6,7 @@ import { NotificationObj, NotificationType } from "@/types";
 type NotificationContextProp = {
     notifications: NotificationObj[],
     removeNotification: (id: string) => void,
-    pushNotification: (type: NotificationType, message: string, duration: number) => void,
+    pushNotification: (type: NotificationType, message: string, duration?: number) => void,
 }
 
 const NotificationContext = createContext<NotificationContextProp | undefined>(undefined);
@@ -19,7 +19,7 @@ const NotificationProvider = ({ children }: { children: ReactNode }) => {
     }, []);
 
   // Triggers a new notification
-    const pushNotification = useCallback((type: NotificationType, message: string, duration: number) => {
+    const pushNotification = useCallback((type: NotificationType, message: string, duration: number = 4000) => {
         const id = uuidv4();
         const newNotification = { id, type, message };
 
@@ -38,6 +38,11 @@ const NotificationProvider = ({ children }: { children: ReactNode }) => {
     );
 };
 
-export const useNotification = (): NotificationContextProp | undefined => useContext(NotificationContext);
-
+export const useNotification = (): NotificationContextProp => {
+    const context = useContext(NotificationContext);
+    if (!context)
+        throw new Error("useNotification must be used within a NotificationProvider");
+    
+    return context;
+}
 export default NotificationProvider;

@@ -1,14 +1,14 @@
 .form, .sign-in-form {
     width: 400px;
     padding: 20px 30px;
+    gap: 10px;
     display: flex;
-    flex-direction: column;
     border-radius: 16px;
+    flex-direction: column;
     margin-left: auto;
     margin-right: auto;
     background: transparent;
     border: 1px solid var(--border-color);
-    gap: 5px;
     overflow: hidden;
 }
   
@@ -19,7 +19,7 @@
 }
   
 .field {
-    gap: 1px;
+    gap: 5px;
     display: flex;
     position: relative;
     flex-direction: column;
@@ -28,12 +28,13 @@
 .show-pass-btn {
     position: absolute;
     top: 50%;
-    right: 0px;
-    transform: translateY(-50%);
+    right: 5px;
+    background: transparent;
     color: var(--text-color);
+    transform: translateY(-50%);
 }
   
-.sign-up-btn, .sign-in-btn, .sign-in-with-email-btn {
+.sign-up-btn, .sign-in-btn {
     text-align: center;
     padding: 10px;
     border-radius: 50px;
@@ -43,24 +44,13 @@
     outline: none;
     cursor: pointer;
     font-weight: bold;
+    margin-bottom: 10px;
     transition: background 0.3s;
-}
-
-.sign-in-with-email-btn {
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--text-color);
-    background: var(--shadow-color);
-}
-
-.sign-in-with-email-btn:hover {
-    color: var(--white-color);
-    background: var(--main-color);
 }
 
 .forgot-password-link, .sign-in-form-link, .sign-up-form-link {
     font-size: 13px;
-    margin: 7px auto;
+    margin: 3px auto;
 }
 
 .forgot-password-link:hover, .sign-in-form-link:hover, .sign-up-form-link:hover {

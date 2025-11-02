@@ -1,3 +1,4 @@
+export type ActiveLinkOptions = "client" | "product" | "invoice"
 export type NotificationType = "success" | "error" | "warning" | "info";
 
 export type MessageStyleProp = {

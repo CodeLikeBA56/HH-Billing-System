@@ -1,14 +1,20 @@
 "use client";
-import { createContext, ReactNode, useCallback, useContext, useState, useEffect } from "react";
+import { ActiveLinkOptions } from "@/types";
+import React, { createContext, ReactNode, useCallback, useContext, useState } from "react";
 
 type ThemeContextProps = {
   isDarkMode: boolean;
+  isSidebarOpen: boolean;
+  activeLink: ActiveLinkOptions;
   toggleTheme: () => void;
+  setIsSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setActiveLink: React.Dispatch<React.SetStateAction<ActiveLinkOptions>> ;
 };
 
 const ThemeContext = createContext<ThemeContextProps | undefined>(undefined);
 
 const ThemeProvider = ({ children }: { children: ReactNode }) => {
+  
   const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
     if (typeof window !== "undefined") {
       const savedTheme = localStorage.getItem("theme");
@@ -16,6 +22,9 @@ const ThemeProvider = ({ children }: { children: ReactNode }) => {
     }
     return false;
   });
+
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
+  const [activeLink, setActiveLink] = useState<ActiveLinkOptions>("client");
 
   const toggleTheme = useCallback(() => {
     setIsDarkMode(prevMode => {
@@ -26,14 +35,15 @@ const ThemeProvider = ({ children }: { children: ReactNode }) => {
     });
   }, []);
 
-  // // Optional: Sync theme class on <html> for global styling
-  // useEffect(() => {
-  //   const root = document.documentElement;
-  //   root.classList.toggle("dark", isDarkMode);
-  // }, [isDarkMode]);
-
   return (
-    <ThemeContext.Provider value={{ isDarkMode, toggleTheme }}>
+    <ThemeContext.Provider value={{ 
+      isDarkMode, 
+      activeLink,
+      isSidebarOpen, 
+      toggleTheme, 
+      setActiveLink,
+      setIsSidebarOpen,
+    }}>
       {children}
     </ThemeContext.Provider>
   );

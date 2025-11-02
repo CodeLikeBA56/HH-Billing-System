@@ -12,9 +12,8 @@ const Navigation: React.FC = () => {
     <nav 
       className="w-screen h-15 sm:h-20 relative flex items-center px-4 sm:px-10 border-b border-border-color"
     >
-      <div className='gap-2 flex items-center text-main-color' title='Double Kick Your Resume'>
-        <span className="material-symbols-outlined logo">sports_gymnastics</span>
-        <span className="text-1xl sm:text-2xl font-bold">Resume</span>
+      <div className='gap-2 flex items-center text-main-color'>
+        <span className="text-1xl sm:text-2xl font-bold">{`HH Men's Wear`}</span>
       </div>
 
       <ul className={`absolute ${toggleNavbar ? "flex" : "hidden"} right-0 top-[calc(100%+1px)] border-l border-b border-border-color 

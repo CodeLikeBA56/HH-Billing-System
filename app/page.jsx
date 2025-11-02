@@ -1,13 +1,12 @@
 "use client";
-import axios from 'axios';
 import Link from 'next/link';
+import { useState } from 'react';
 import { auth } from '@/lib/firebase';
-import React, { useState } from 'react';
+import styles from './auth.module.css';
 import { useRouter } from 'next/navigation';
-import styles from '../auth.module.css';
-import Navigation from '../../../components/Navigation';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import Navigation from '@/components/Navigation.tsx';
 import { useAuthContext } from '@/contexts/AuthProvider';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useNotification } from '@/contexts/NotificationProvider';
 
 const SignIn = () => {
@@ -15,8 +14,8 @@ const SignIn = () => {
   const { setUserInfo } = useAuthContext();
   const{ pushNotification } = useNotification();
   
-  const [email, setEmail] = useState("211400068@gift.edu.pk");
-  const [password, setPassword] = useState("1234567");
+  const [email, setEmail] = useState("codelikeba56@gmail.com");
+  const [password, setPassword] = useState("Sammu101325");
 
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -34,18 +33,11 @@ const SignIn = () => {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-
-      const response = await axios.post('/api/auth/login', {  uid: user.uid, email });
-      
-      if (200 === response.status) {
-        const { type, message, user } = response.data;
-        console.log(user);
-        
-        pushNotification(type, message);
-        
+  
+      if (user.uid === process.env.NEXT_PUBLIC_FIREBASE_ADMIN_UID) {
+        pushNotification("success", "Logged in successfully!");
         setUserInfo(user);
-        
-        Router.push("/fill-resume");
+        Router.push("/home");
         setEmail("");
         setPassword("");
       }
@@ -110,9 +102,6 @@ const SignIn = () => {
 
         {/* Submit */}
         <button type="submit" className={styles["sign-in-btn"]} disabled={isLoading}>Login</button>
-        <span className={styles["alternative-option-message"]}>or</span>
-        <button type="button" className={styles['sign-in-with-email-btn']} disabled={isLoading}>Login with Email Link</button>
-        <Link className={styles['sign-up-form-link']} href="/sign-up">Don't have an account?</Link>
       </form>
     </div>
   );

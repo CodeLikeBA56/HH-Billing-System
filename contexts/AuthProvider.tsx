@@ -20,8 +20,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [userInfo, setUserInfo] = useState(() => {
     try {
       const storedUser = localStorage.getItem("userInfo");
-      const user = storedUser ? JSON.parse(storedUser) : null;
-      return user;
+      return storedUser ? JSON.parse(storedUser) : null;
     } catch {
       return null;
     }
@@ -40,8 +39,17 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUserInfo(null);
       pushNotification("info", "Logged out successfully!");
       Router.push("/sign-in");
-    } catch (error: unknown | any) {
-      pushNotification("error", `Logout failed: ${error.response?.data || error.message}`);
+    } catch (error: unknown) {
+      let errorMessage = "Logout failed";
+
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if (typeof error === "object" && error !== null && "response" in error) {
+        const err = error as { response?: { data?: string } };
+        errorMessage = `Logout failed: ${err.response?.data || "Unknown error"}`;
+      }
+
+      pushNotification("error", errorMessage);
     }
   }, [pushNotification, Router]);
 
@@ -56,6 +64,12 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-export const useAuthContext = (): AuthContextType | undefined => useContext(AuthContext);
+export const useAuthContext = (): AuthContextType => {
+  const context = useContext(AuthContext);
+  if (!context)
+    throw new Error("useAuthContext must be used within a AuthProvider");
+
+  return context
+}
 
 export default AuthProvider;
