@@ -37,7 +37,7 @@ const SignIn = () => {
       if (user.uid === process.env.NEXT_PUBLIC_FIREBASE_ADMIN_UID) {
         pushNotification("success", "Logged in successfully!");
         setUserInfo(user);
-        Router.push("/home");
+        Router.push("/dashboard/");
         setEmail("");
         setPassword("");
       }

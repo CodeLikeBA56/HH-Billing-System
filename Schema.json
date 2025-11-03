@@ -1,0 +1,40 @@
+{
+    "customer": {
+        "name": "Ali Khan",
+        "phone": "03001234567",
+        "previousBalance": "1500",
+        "createdAt": "Timestamp",
+        "updatedAt": "Timestamp"
+    },
+    "Product": {
+        "name": "Cotton Kurta",
+        "designNumber": "D-102",
+        "price": "1200",
+        "createdAt": "Timestamp",
+        "updatedAt": "Timestamp"
+    },
+    "invoice": {
+        "date": "Timestamp",
+        "billNo": "BILL-002",
+        "customerId": "customerIdRef",
+        "includePreviousBalance": "true",
+        "previousBalance": "1500",
+        "items": [
+            {
+            "productId": "productIdRef",
+            "productName": "Cotton Kurta",
+            "designNumber": "D-102",
+            "description": "Light blue cotton with embroidery",
+            "quantity": "2",
+            "price": "1200",
+            "total": "2400"
+            }
+        ],
+        "grandTotal": "3900",
+        "totalWithBalance": "5400",
+        "paidAmount": "3000",
+        "remainingBalance": "2400",
+        "createdAt": "Timestamp"
+    }
+}
+  

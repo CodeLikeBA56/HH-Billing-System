@@ -1,3 +1,11 @@
+export interface Client {
+  uid?: string;
+  name: string;
+  phone: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
 export type ActiveLinkOptions = "client" | "product" | "invoice"
 export type NotificationType = "success" | "error" | "warning" | "info";
 

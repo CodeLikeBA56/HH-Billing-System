@@ -7,6 +7,7 @@ import App from "./App";
 import AuthProvider from "@/contexts/AuthProvider";
 import ThemeProvider from "@/contexts/ThemeProvider";
 import NotificationProvider from "@/contexts/NotificationProvider";
+import ClientProvider from "@/contexts/ClientProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,9 +31,11 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <ThemeProvider>
           <NotificationProvider>
             <AuthProvider>
-              <App>
-                {children}
-              </App>
+              <ClientProvider>
+                <App>
+                  {children}
+                </App>
+              </ClientProvider>
             </AuthProvider>
           </NotificationProvider>
         </ThemeProvider>
