@@ -6,6 +6,15 @@ export interface Client {
   updatedAt?: Date | null;
 }
 
+export interface Product {
+  uid?: string;
+  name: string;
+  designNumber: string;
+  price: number;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
 export type ActiveLinkOptions = "client" | "product" | "invoice"
 export type NotificationType = "success" | "error" | "warning" | "info";
 
