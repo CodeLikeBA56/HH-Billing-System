@@ -21,18 +21,26 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Client } from "@/types";
 import { useNotification } from "@/contexts/NotificationProvider";
+import EditClientDialog from "@/components/clients/EditClientDialog";
 
 const ClientPage: React.FC = () => {
   const { pushNotification } = useNotification();
-  const { clients, addClient, updateClient, deleteClient, loading, error } = useClientContext();
+  const { clients, addClient, deleteClient, loading, error } = useClientContext();
 
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  const [search, setSearch] = useState<string>("");
+  const [editOpen, setEditOpen] = useState(false);
+  const [selectedClient, setSelectedClient] = useState<Client | null>(null);
+
+  const handleOpenEdit = (client: Client) => {
+    setSelectedClient(client);
+    setEditOpen(true);
+  };
 
   const handleAddClient = async () => {
     if (!name.trim() || !phone.trim())
@@ -119,7 +127,7 @@ const ClientPage: React.FC = () => {
             {clients.map((client) => (
               <TableRow key={client.uid}>
                 <TableCell className="p-0 w-[60px]">
-                  <button type="button" className="bg-transparent! mx-auto" onClick={() => console.log("!")}>
+                  <button type="button" className="bg-transparent! mx-auto" onClick={() => handleOpenEdit(client)}>
                     <span className="material-symbols-outlined text-green-500">edit</span>
                   </button>
                 </TableCell>
@@ -127,9 +135,10 @@ const ClientPage: React.FC = () => {
                 <TableCell>{client.phone}</TableCell>
                 <TableCell>
                   {
-                    client.createdAt?.toDate
-                    ? client.createdAt.toDate().toLocaleDateString()
-                    : "-"}
+                    client.createdAt
+                    ?  client.createdAt.toLocaleDateString()
+                    : "-"
+                  }
                 </TableCell>
                 <TableCell className="p-0 w-[80px]">
                   <button type="button" className="bg-transparent! mx-auto" onClick={() => handleDeleteClient(client.uid as string)}>
@@ -143,6 +152,12 @@ const ClientPage: React.FC = () => {
       ) : (
         !loading && <p className="px-5 py-3 text-secondary-text">No clients found.</p>
       )}
+
+      <EditClientDialog
+        open={editOpen}
+        onOpenChange={setEditOpen}
+        client={selectedClient}
+      />
     </div>
   );
 };

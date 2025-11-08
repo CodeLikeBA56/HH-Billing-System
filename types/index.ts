@@ -2,8 +2,8 @@ export interface Client {
   uid?: string;
   name: string;
   phone: string;
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt?: Date | null;
+  updatedAt?: Date | null;
 }
 
 export type ActiveLinkOptions = "client" | "product" | "invoice"

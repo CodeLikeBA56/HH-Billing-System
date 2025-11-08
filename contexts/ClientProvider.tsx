@@ -39,7 +39,15 @@ const ClientProvider = ({ children }: { children: ReactNode }) => {
         const unsubscribe = onSnapshot(
             collection(db, "clients"),
             (snapshot) => {
-                setClients(snapshot.docs.map(doc => ({ uid: doc.id, ...doc.data() } as Client)));
+                setClients(snapshot.docs.map(doc => {
+                    const data = doc.data();
+                    return { 
+                        uid: doc.id, 
+                        ...data,
+                        createdAt: data.createdAt?.toDate?.() || null,
+                        updatedAt: data.updatedAt?.toDate?.() || null,
+                    } as Client
+                }));
                 setLoading(false);
             },
             (err) => {
