@@ -11,8 +11,8 @@ export interface Product {
   name: string;
   designNumber: string;
   price: number;
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt?: Date | null;
+  updatedAt?: Date | null;
 }
 
 export type ActiveLinkOptions = "client" | "product" | "invoice"

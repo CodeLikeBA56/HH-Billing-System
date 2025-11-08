@@ -28,7 +28,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   
   useEffect(() => {
     if (!userInfo) return;
-    
+   
     localStorage.setItem("userInfo", JSON.stringify(userInfo));
   }, [userInfo]);
 

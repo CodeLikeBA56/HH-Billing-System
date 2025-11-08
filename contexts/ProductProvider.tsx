@@ -18,6 +18,7 @@ import {
     useCallback,
     createContext,
 } from "react";
+import { useAuthContext } from "./AuthProvider";
 
 interface ProductContextProps {
     loading: boolean;
@@ -31,15 +32,27 @@ interface ProductContextProps {
 const ProductContext = createContext<ProductContextProps | undefined>(undefined);
 
 const ProductProvider = ({ children }: { children: ReactNode }) => {
+    const { userInfo } = useAuthContext();
+    
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
+        if (!userInfo?.uid) return;
+
         const unsubscribe = onSnapshot(
             collection(db, "products"),
             (snapshot) => {
-                setProducts(snapshot.docs.map(doc => ({ uid: doc.id, ...doc.data()} as Product)));
+                setProducts(snapshot.docs.map(doc => {
+                    const data = doc.data();
+                    return { 
+                        uid: doc.id, 
+                        ...data,
+                        createdAt: data.createdAt?.toDate?.() || null,
+                        updatedAt: data.updatedAt?.toDate?.() || null,
+                    } as Product 
+                }));
                 setLoading(false);
             },
             (err) => {
@@ -47,10 +60,10 @@ const ProductProvider = ({ children }: { children: ReactNode }) => {
                 setError("An error occured while fetching the products.");
                 setLoading(false);
             }
-        )
+        );
 
         return () => unsubscribe();
-    }, []);
+    }, [userInfo?.uid]);
 
     const addProduct = useCallback(async (product: { name: string, designNumber: string, price: number }) => {
         try {

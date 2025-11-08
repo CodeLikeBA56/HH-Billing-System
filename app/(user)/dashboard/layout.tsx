@@ -1,11 +1,12 @@
 "use client";
 import { ReactNode } from "react";
 import AppSidebar from "@/components/app-sidebar";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { useTheme } from "@/contexts/ThemeProvider";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
-    const { toggleTheme } = useTheme();
+  const { toggleTheme } = useTheme();
+
   return (
     <SidebarProvider>
       <div className="flex h-screen w-full overflow-hidden">

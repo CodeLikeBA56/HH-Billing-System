@@ -13,6 +13,7 @@ import { usePathname, useRouter } from "next/navigation";
 import styles from "./app-sidebar.module.css";
 import { useAuthContext } from "@/contexts/AuthProvider";
 import { useClientContext } from "@/contexts/ClientProvider";
+import { useProductContext } from "@/contexts/ProductProvider";
 
 interface SidebarLinkProps {
   label: string;
@@ -53,6 +54,7 @@ const SidebarLink: React.FC<SidebarLinkProps> = React.memo(({ label, icon, href,
 const AppSidebar: React.FC = () => {
   const { userInfo } = useAuthContext();
   const { clients } = useClientContext();
+  const { products } = useProductContext();
 
   return (
     <Sidebar side="left" variant="sidebar" collapsible="offcanvas">
@@ -71,7 +73,7 @@ const AppSidebar: React.FC = () => {
           </h4>
           <ul className="text-primary-text gap-2 flex flex-col">
             <SidebarLink label="Clients" icon="groups" href="/dashboard" count={clients.length} />
-            <SidebarLink label="Products" icon="inventory_2" href="/dashboard/product" />
+            <SidebarLink label="Products" icon="inventory_2" href="/dashboard/product" count={products.length} />
             <SidebarLink label="Invoices" icon="receipt_long" href="/dashboard/invoice" />
           </ul>
         </SidebarGroup>

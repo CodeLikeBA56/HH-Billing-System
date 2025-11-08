@@ -25,7 +25,7 @@ import { Client } from "@/types";
 import { useNotification } from "@/contexts/NotificationProvider";
 import EditClientDialog from "@/components/clients/EditClientDialog";
 
-const ClientPage: React.FC = () => {
+const ManageClientPage: React.FC = () => {
   const { pushNotification } = useNotification();
   const { clients, addClient, deleteClient, loading, error } = useClientContext();
 
@@ -162,4 +162,4 @@ const ClientPage: React.FC = () => {
   );
 };
 
-export default ClientPage;
+export default ManageClientPage;

@@ -18,6 +18,7 @@ import {
     useCallback,
     createContext,
 } from "react";
+import { useAuthContext } from "./AuthProvider";
 
 interface ClientContextProps {
     loading: boolean;
@@ -31,11 +32,15 @@ interface ClientContextProps {
 const ClientContext = createContext<ClientContextProps | undefined>(undefined);
 
 const ClientProvider = ({ children }: { children: ReactNode }) => {
+    const { userInfo } = useAuthContext();
+
     const [clients, setClients] = useState<Client[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => { // Realtime sync
+        if (!userInfo?.uid) return;
+        
         const unsubscribe = onSnapshot(
             collection(db, "clients"),
             (snapshot) => {
@@ -58,7 +63,7 @@ const ClientProvider = ({ children }: { children: ReactNode }) => {
         );
 
         return () => unsubscribe();
-    }, []);
+    }, [userInfo?.uid]);
 
   // Add client
     const addClient = useCallback(async (client: { name: string; phone: string }) => {
