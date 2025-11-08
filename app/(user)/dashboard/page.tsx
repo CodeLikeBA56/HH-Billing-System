@@ -25,7 +25,7 @@ import { useNotification } from "@/contexts/NotificationProvider";
 
 const ClientPage: React.FC = () => {
   const { pushNotification } = useNotification();
-  const { clients, addClient, loading, error } = useClientContext();
+  const { clients, addClient, updateClient, deleteClient, loading, error } = useClientContext();
 
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
@@ -48,6 +48,13 @@ const ClientPage: React.FC = () => {
       pushNotification("error", "Failed to add client");
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handleDeleteClient = async (id: string) => {
+    if (confirm("Are you sure you want to delete this client?")) {
+      await deleteClient(id);
+      pushNotification("success", "Client deleted successfully.");
     }
   };
 
@@ -101,14 +108,21 @@ const ClientPage: React.FC = () => {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="p-0">-</TableHead>
               <TableHead>Name</TableHead>
               <TableHead>Phone</TableHead>
               <TableHead>Created At</TableHead>
+              <TableHead className="p-0">-</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {clients.map((client) => (
               <TableRow key={client.uid}>
+                <TableCell className="p-0 w-[60px]">
+                  <button type="button" className="bg-transparent! mx-auto" onClick={() => console.log("!")}>
+                    <span className="material-symbols-outlined text-green-500">edit</span>
+                  </button>
+                </TableCell>
                 <TableCell>{client.name}</TableCell>
                 <TableCell>{client.phone}</TableCell>
                 <TableCell>
@@ -116,6 +130,11 @@ const ClientPage: React.FC = () => {
                     client.createdAt?.toDate
                     ? client.createdAt.toDate().toLocaleDateString()
                     : "-"}
+                </TableCell>
+                <TableCell className="p-0 w-[80px]">
+                  <button type="button" className="bg-transparent! mx-auto" onClick={() => handleDeleteClient(client.uid as string)}>
+                    <span className="material-symbols-outlined text-red-500">delete</span>
+                  </button>
                 </TableCell>
               </TableRow>
             ))}
