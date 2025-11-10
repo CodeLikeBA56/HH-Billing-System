@@ -6,11 +6,36 @@ export interface Client {
   updatedAt?: Date | null;
 }
 
+export type size = "XS" | "S" | "M" | "L" | "XL"
+
 export interface Product {
   uid?: string;
   name: string;
-  designNumber: string;
   price: number;
+  designNumber: string;
+  sizeAvailable: size[];
+  createdAt?: Date | null;
+  updatedAt?: Date | null;
+}
+
+export interface InvoiceItem {
+  productId: string; // reference to Product.uid
+  productName: string;
+  designNumber: string;
+  size: size;
+  quantity: number;
+  price: number;
+  total: number;
+}
+
+export interface Invoice {
+  uid?: string;
+  billNo: string;
+  customerId: string; // reference to Client.uid
+  items: InvoiceItem[];
+  grandTotal: number;
+  paidAmount: number;
+  remainingBalance: number;
   createdAt?: Date | null;
   updatedAt?: Date | null;
 }
