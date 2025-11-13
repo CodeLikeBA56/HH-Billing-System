@@ -15,7 +15,7 @@ const InvoiceRow = React.memo(({ invoice }: { invoice: Invoice }) => {
       if (paidAmount === 0) return "unpaid";
       return "partial";
     };
-  
+
     const getStatusStyles = (status: string) => {
       switch (status) {
         case "paid":
