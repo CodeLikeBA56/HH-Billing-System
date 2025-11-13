@@ -27,6 +27,7 @@ interface InvoiceContextProps {
   addInvoice: (invoice: Omit<Invoice, "uid" | "createdAt" | "updatedAt">) => Promise<void>;
   updateInvoice: (id: string, updates: Partial<Invoice>) => Promise<void>;
   deleteInvoice: (id: string) => Promise<void>;
+  getReceivableBalance: (uid: string) => number;
 }
 
 const InvoiceContext = createContext<InvoiceContextProps | undefined>(undefined);
@@ -102,6 +103,13 @@ const InvoiceProvider = ({ children }: { children: ReactNode }) => {
     }
   }, []);
 
+  const getReceivableBalance = useCallback((uid: string) => {
+    const customerInvoices = invoices.filter(invoice => invoice.customerId === uid && invoice.remainingBalance > 0);
+    return customerInvoices.reduce((receivable, invoice) => {
+      return receivable + invoice.remainingBalance;
+    }, 0);
+  }, [invoices]);
+
   return (
     <InvoiceContext.Provider
       value={{
@@ -111,6 +119,7 @@ const InvoiceProvider = ({ children }: { children: ReactNode }) => {
         addInvoice,
         updateInvoice,
         deleteInvoice,
+        getReceivableBalance,
       }}
     >
       {children}

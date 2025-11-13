@@ -22,11 +22,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Client } from "@/types";
+import { useInvoiceContext } from "@/contexts/InvoiceProvider";
 import { useNotification } from "@/contexts/NotificationProvider";
 import EditClientDialog from "@/components/clients/EditClientDialog";
 
 const ManageClientPage: React.FC = () => {
   const { pushNotification } = useNotification();
+  const { getReceivableBalance } = useInvoiceContext();
   const { clients, addClient, deleteClient, loading, error } = useClientContext();
 
   const [open, setOpen] = useState(false);
@@ -119,6 +121,7 @@ const ManageClientPage: React.FC = () => {
               <TableHead className="p-0">-</TableHead>
               <TableHead>Name</TableHead>
               <TableHead>Phone</TableHead>
+              <TableHead>Receivable</TableHead>
               <TableHead>Created At</TableHead>
               <TableHead className="p-0">-</TableHead>
             </TableRow>
@@ -133,6 +136,7 @@ const ManageClientPage: React.FC = () => {
                 </TableCell>
                 <TableCell>{client.name}</TableCell>
                 <TableCell>{client.phone}</TableCell>
+                <TableCell>{getReceivableBalance(client.uid)}</TableCell>
                 <TableCell>
                   {
                     client.createdAt
