@@ -34,6 +34,7 @@ const ManageClientPage: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [location, setLocation] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   const [editOpen, setEditOpen] = useState(false);
@@ -50,9 +51,10 @@ const ManageClientPage: React.FC = () => {
 
     try {
       setSubmitting(true);
-      await addClient({ name, phone });
+      await addClient({ name, phone, location });
       setName("");
       setPhone("");
+      setLocation("");
       setOpen(false);
     } catch {
       pushNotification("error", "Failed to add client");
@@ -95,6 +97,11 @@ const ManageClientPage: React.FC = () => {
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
               />
+              <Input
+                placeholder="Location"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+              />
             </div>
 
             <DialogFooter>
@@ -121,6 +128,7 @@ const ManageClientPage: React.FC = () => {
               <TableHead className="p-0">-</TableHead>
               <TableHead>Name</TableHead>
               <TableHead>Phone</TableHead>
+              <TableHead>Location</TableHead>
               <TableHead>Receivable</TableHead>
               <TableHead>Created At</TableHead>
               <TableHead className="p-0">-</TableHead>
@@ -134,13 +142,14 @@ const ManageClientPage: React.FC = () => {
                     <span className="material-symbols-outlined text-green-500">edit</span>
                   </button>
                 </TableCell>
-                <TableCell>{client.name}</TableCell>
-                <TableCell>{client.phone}</TableCell>
+                <TableCell>{client?.name}</TableCell>
+                <TableCell>{client?.phone}</TableCell>
+                <TableCell>{client?.location}</TableCell>
                 <TableCell>{getReceivableBalance(client.uid!)}</TableCell>
                 <TableCell>
                   {
-                    client.createdAt
-                    ?  client.createdAt.toLocaleDateString()
+                    client?.createdAt
+                    ?  client?.createdAt.toLocaleDateString()
                     : "-"
                   }
                 </TableCell>

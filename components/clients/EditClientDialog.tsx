@@ -26,12 +26,14 @@ const EditClientDialog: React.FC<EditClientDialogProps> = React.memo(({open, onO
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [location, setLocation] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     if (client) {
       setName(client.name);
       setPhone(client.phone);
+      setLocation(client?.location || "");
     }
   }, [client]);
 
@@ -42,7 +44,7 @@ const EditClientDialog: React.FC<EditClientDialogProps> = React.memo(({open, onO
 
     try {
       setSubmitting(true);
-      await updateClient(client?.uid as string, { name, phone });
+      await updateClient(client?.uid as string, { name, phone, location });
       pushNotification("success", "Client updated successfully.");
       onOpenChange(false);
     } catch {
@@ -69,6 +71,11 @@ const EditClientDialog: React.FC<EditClientDialogProps> = React.memo(({open, onO
             placeholder="Phone number"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
+          />
+          <Input
+            placeholder="Location"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
           />
         </div>
 
