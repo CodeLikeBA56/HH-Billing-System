@@ -27,6 +27,7 @@ interface ClientContextProps {
     addClient: (client: Omit<Client, "id" | "createdAt" | "updatedAt">) => Promise<void>;
     updateClient: (id: string, updates: Partial<Client>) => Promise<void>;
     deleteClient: (id: string) => Promise<void>;
+    getCustomerName: (id: string) => string
 }
 
 const ClientContext = createContext<ClientContextProps | undefined>(undefined);
@@ -103,6 +104,11 @@ const ClientProvider = ({ children }: { children: ReactNode }) => {
         }
     }, []);
 
+    const getCustomerName = useCallback((id: string) => {
+        const customer = clients.find((c: Client) => c.uid === id);
+        return customer ? customer.name : "Unknown";
+    }, [clients]);
+
     return (
         <ClientContext.Provider
             value={{
@@ -110,6 +116,7 @@ const ClientProvider = ({ children }: { children: ReactNode }) => {
                 addClient,
                 updateClient,
                 deleteClient,
+                getCustomerName,
                 loading,
                 error,
             }}
