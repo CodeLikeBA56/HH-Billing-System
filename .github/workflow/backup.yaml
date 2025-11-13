@@ -1,0 +1,24 @@
+name: Firestore Backup
+
+on:
+  schedule:
+    - cron: "0 2 * * *" # every day at 2 AM UTC
+  workflow_dispatch:
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Decode GCP key
+        run: |
+          echo "${{ secrets.GCP_SERVICE_ACCOUNT_BASE64 }}" | base64 --decode > service-account.json
+
+      - name: Run Firestore Backup
+        run: |
+          npx firebase-tools firestore:export gs://your-bucket-name/backups/$(date +%F) \
+            --project your-project-id \
+            --account service-account.json

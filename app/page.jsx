@@ -8,6 +8,7 @@ import Navigation from '@/components/Navigation.tsx';
 import { useAuthContext } from '@/contexts/AuthProvider';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useNotification } from '@/contexts/NotificationProvider';
+import { Input } from '@/components/ui/input';
 
 const SignIn = () => {
   const Router = useRouter();
@@ -69,7 +70,7 @@ const SignIn = () => {
         <div className={styles.field}>
           <label>Email</label>
 
-          <input
+          <Input
             required
             type="email"
             value={email}
@@ -84,7 +85,7 @@ const SignIn = () => {
           <label>Password</label>
           
           <div className='icon-field'>
-            <input
+            <Input
               required
               minLength={7}
               value={password}

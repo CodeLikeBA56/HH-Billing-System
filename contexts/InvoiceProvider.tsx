@@ -105,12 +105,12 @@ const InvoiceProvider = ({ children }: { children: ReactNode }) => {
   return (
     <InvoiceContext.Provider
       value={{
+        error,
+        loading,
         invoices,
         addInvoice,
         updateInvoice,
         deleteInvoice,
-        loading,
-        error,
       }}
     >
       {children}

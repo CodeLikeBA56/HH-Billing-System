@@ -11,7 +11,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     <SidebarProvider>
       <div className="flex h-screen w-full overflow-hidden">
         <AppSidebar />
-        <main className="flex-1 overflow-y-auto bg-background">
+        <main className="flex-1 overflow-y-auto pb-7">
             <nav className="flex items-center p-4 sm:p-5 border-b border-border-color">
                 <SidebarTrigger />
 
