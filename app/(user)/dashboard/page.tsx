@@ -76,7 +76,7 @@ const ManageClientPage: React.FC = () => {
 
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button>+ Add Client</Button>
+            <Button>Add Client</Button>
           </DialogTrigger>
 
           <DialogContent className="sm:max-w-[425px]">
@@ -136,7 +136,7 @@ const ManageClientPage: React.FC = () => {
                 </TableCell>
                 <TableCell>{client.name}</TableCell>
                 <TableCell>{client.phone}</TableCell>
-                <TableCell>{getReceivableBalance(client.uid)}</TableCell>
+                <TableCell>{getReceivableBalance(client.uid!)}</TableCell>
                 <TableCell>
                   {
                     client.createdAt

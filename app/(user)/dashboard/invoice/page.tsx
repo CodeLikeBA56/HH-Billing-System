@@ -24,7 +24,7 @@ type Filters = {
 }
 
 const filters: Filters[] = [
-  { key: "all", label: "All", color: "bg-white" },
+  { key: "all", label: "All", color: "bg-primary-text" },
   { key: "paid", label: "Paid", color: "bg-green-500" },
   { key: "partial", label: "Partially Paid", color: "bg-[#016BE1]" },
   { key: "unpaid", label: "Unpaid", color: "bg-[#EF9400]" },
@@ -65,17 +65,17 @@ const ManageInvoicePage: React.FC = () => {
   return (
     <div>
       {/* Header */}
-      <header className="flex justify-between items-center px-5 py-5 border-b">
+      <header className="flex justify-between items-center px-5 py-5">
         <h1 className="text-2xl font-bold text-main">Invoices</h1>
         <Button onClick={handleCreateInvoice}>Create Invoice</Button>
       </header>
 
       {/* Filter Buttons */}
       <section
-        className="gap-8 flex px-4 sm:px-6 py-5
+        className="gap-6 sm:gap-6 flex px-4 sm:px-6 pb-5
         [&_button]:p-0! [&_button]:bg-transparent! [&_button]:gap-3!
-        [&_button]:rounded-none! [&_button]:px-2! sm:[&_button]:px-3!
-        [&_button]:border-b-2!"
+        [&_button]:rounded-none! [&_button]:px-2!
+        [&_button]:border-b-2! hover:[&_button]:border-b-2! "
       >
         {filters.map((filter) => (
           <Button
@@ -87,7 +87,7 @@ const ManageInvoicePage: React.FC = () => {
             }`}
           >
             <span className={`w-2 h-2 rounded-full ${filter.color}`}></span>
-            <span>{filter.label}</span>
+            <span className="text-primary-text">{filter.label}</span>
           </Button>
         ))}
       </section>
@@ -97,7 +97,7 @@ const ManageInvoicePage: React.FC = () => {
         className="
         [&_td]:p-0
         [&_th]:p-0 [&_th]:px-3 
-        sm:[&_td]:p-0
+        sm:[&_td]:p-0 [&_td]:px-2
         sm:[&_th]:p-0"
       >
         <TableHeader>

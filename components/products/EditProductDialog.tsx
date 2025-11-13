@@ -54,6 +54,7 @@ const EditProductDialog: React.FC<EditProductDialogProps> = React.memo(({ open, 
           name: name.trim(),
           designNumber: designNumber.trim(),
           price: Number(price),
+          sizeAvailable: ["XS", "S", "M", "L", "XL"],
         });
         pushNotification("success", "Product updated successfully.");
         onOpenChange(false);

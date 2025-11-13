@@ -26,7 +26,7 @@ const Notification: React.FC<NotificationProps> = React.memo(({ id, type = "info
       <div className={`${styles['notification-content']}`}>
         <span className="material-symbols-outlined">{icon}</span>
         <p>{message}</p>
-        <button className={`w-[20px] ${styles["close-notification-btn"]}`} onClick={() => onClickFn(id)}>
+        <button type='button' className={`${styles["close-notification-btn"]}`} onClick={() => onClickFn(id)}>
           <span className='material-symbols-outlined'>close</span>
         </button>
       </div>

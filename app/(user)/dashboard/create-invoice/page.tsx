@@ -1,8 +1,8 @@
 "use client";
-import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { useState, useCallback, useMemo } from "react";
 import {
   Select,
   SelectContent,
@@ -19,10 +19,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { PlusCircle } from "lucide-react";
+import { InvoiceItem, size } from "@/types";
 import { useClientContext } from "@/contexts/ClientProvider";
 import { useProductContext } from "@/contexts/ProductProvider";
 import { useInvoiceContext } from "@/contexts/InvoiceProvider";
-import { Client, InvoiceItem } from "@/types";
 
 export default function CreateInvoice() {
   const params = useParams();
@@ -34,15 +34,11 @@ export default function CreateInvoice() {
 
   const [paidAmount, setPaidAmount] = useState<number>(0);
   const [selectedClientId, setSelectedClientId] = useState<string>(clientId);
-  const [selectedClientInfo, setSelectedClientInfo] = useState<Client | null>(null);
 
-  useEffect(() => {
-    if (selectedClientId.trim()) {
-      const client = clients.find((client) => client.uid === selectedClientId);
-      setSelectedClientInfo(client || null);
-    } else {
-      setSelectedClientInfo(null);
-    }
+  const selectedClientInfo = useMemo(() => {
+    if (!selectedClientId || !clients.length) return null;
+
+    return clients.find((c) => c.uid === selectedClientId) || null;
   }, [clients, selectedClientId]);
 
   const [items, setItems] = useState<InvoiceItem[]>([
@@ -76,7 +72,7 @@ export default function CreateInvoice() {
     setItems((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const handleChange = (index: number, field: string, value: string | number) => {
+  const handleChange = <K extends keyof InvoiceItem>(index: number, field: K, value: InvoiceItem[K]) => {
     const updated = [...items];
     updated[index][field] = value;
 
@@ -93,13 +89,17 @@ export default function CreateInvoice() {
     setItems(updated);
   };
 
-  const grandTotal = items.reduce((acc, cur) => acc + cur.total, 0);
+  const grandTotal = useMemo(() => { 
+    return items.reduce((sum, item) => sum + item.total, 0) || 0
+  }, [items]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
 
+    const billNo = `INV-${Date.now()}`;
+
     await addInvoice({
-      billNo: `INV-${Date.now()}`,
+      billNo,
       customerId: selectedClientId,
       items,
       grandTotal,
@@ -108,7 +108,7 @@ export default function CreateInvoice() {
     });
 
     alert("Invoice added successfully!");
-  };
+  }, [addInvoice, grandTotal, items, paidAmount, selectedClientId]);
 
   return (
     <>
@@ -218,7 +218,7 @@ export default function CreateInvoice() {
                 <TableCell>
                   <Select
                     value={item.size}
-                    onValueChange={(val) => handleChange(index, "size", val)}
+                    onValueChange={(val) => handleChange(index, "size", val as size)}
                   >
                     <SelectTrigger className="bg-transparent! text-primary-text! w-full! focus:ring-0!">
                       <SelectValue placeholder="Select size" />

@@ -37,7 +37,7 @@ const InvoiceRow = React.memo(({ invoice }: { invoice: Invoice }) => {
           <button
             type="button"
             onClick={() => router.push(`/dashboard/invoice/${invoice.uid}`)}
-            className="material-symbols-outlined w-full! rounded-none! bg-transparent!"
+            className="material-symbols-outlined w-full! text-green-500! rounded-none! bg-transparent!"
           >
             edit
           </button>

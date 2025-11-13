@@ -6,7 +6,6 @@
     scroll-behavior: smooth;
     padding: 20px;
     width: max-content;
-    min-height: 100px;
     max-height: 100vh;
     max-height: 100dvh;
     height: max-content;
@@ -23,8 +22,6 @@
     display: flex;
     align-items: center;
     flex-direction: column;
-    /* opacity: 0; */
-    /* visibility: hidden; */
     border: 2px solid;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -46,7 +43,7 @@
 
 .close-notification-btn {
     min-width: 25px;
-    height: 25px;
+    min-height: 25px;
     border-radius: 50px;
     margin-left: auto;
     display: flex;
@@ -101,7 +98,7 @@
     transform: scaleX(0);
     transform-origin: left;
     border-radius: inherit;
-    animation: progress 3s .3s linear;
+    animation: progress 3.7s .3s linear;
     background: linear-gradient(to right, var(--notification-bg), var(--notification-border));
 }
 

@@ -58,6 +58,7 @@ const ManageProductPage: React.FC = () => {
         name,
         designNumber,
         price: Number(price),
+        sizeAvailable: ["XS", "S", "M", "L", "XL"],
       });
       setName("");
       setPrice(0);
@@ -86,7 +87,7 @@ const ManageProductPage: React.FC = () => {
 
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button>+ Add Product</Button>
+            <Button>Add Product</Button>
           </DialogTrigger>
 
           <DialogContent className="sm:max-w-[425px]">
