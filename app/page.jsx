@@ -15,8 +15,8 @@ const SignIn = () => {
   const { setUserInfo } = useAuthContext();
   const{ pushNotification } = useNotification();
   
-  const [email, setEmail] = useState("codelikeba56@gmail.com");
-  const [password, setPassword] = useState("Sammu101325");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
