@@ -87,7 +87,7 @@ const ManageInvoicePage: React.FC = () => {
             }`}
           >
             <span className={`w-2 h-2 rounded-full ${filter.color}`}></span>
-            <span className="text-primary-text">{filter.label}</span>
+            <span className={`${activeFilter === filter.key ? "text-primary-text" : "text-gray-500" }`}>{filter.label}</span>
           </Button>
         ))}
       </section>

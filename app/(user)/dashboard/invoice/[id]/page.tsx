@@ -26,7 +26,6 @@ import { useProductContext } from "@/contexts/ProductProvider";
 import { useInvoiceContext } from "@/contexts/InvoiceProvider";
 import { useNotification } from "@/contexts/NotificationProvider";
 
-
 const EditInvoicePage = () => {
     const params = useParams();
     const router = useRouter();
@@ -162,7 +161,7 @@ const EditInvoicePage = () => {
             value={invoice.customerId}
             onValueChange={(val) => handleChangeField("customerId", val)}
           >
-            <SelectTrigger className="w-fit bg-transparent! border! border-border!">
+            <SelectTrigger className="w-fit bg-transparent! text-primary-text! border! border-border!">
               <SelectValue placeholder="Select client" />
             </SelectTrigger>
             <SelectContent>
@@ -250,7 +249,7 @@ const EditInvoicePage = () => {
                   value={item.size}
                   onValueChange={(val) => handleChangeItem(index, "size", val)}
                 >
-                  <SelectTrigger className="bg-transparent!">
+                  <SelectTrigger className="bg-transparent! text-primary-text! w-full! focus:ring-0!">
                     <SelectValue placeholder="Size" />
                   </SelectTrigger>
                   <SelectContent>
