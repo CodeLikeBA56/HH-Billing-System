@@ -1,9 +1,6 @@
-
 ## Project Title
 
 A simple billing management system designed for a client running a small scale business, built with Next.js and Firebase. It helps businesses manage clients, products, and invoices in one place. Users can create, edit, and track invoices, manage payments, and monitor remaining balances through a clean and responsive interface.
-
-
 
 ## Features
 
@@ -14,6 +11,7 @@ A simple billing management system designed for a client running a small scale b
 - Filter invoices by payment status.
 - Real-time data sync with Firebase.
 - Clean UI built with shadcn and Tailwind CSS.
+
 ## Tech Stack
 
 - Next.js 14 (React 18)
@@ -21,6 +19,7 @@ A simple billing management system designed for a client running a small scale b
 - Firebase (Firestore + Auth)
 - Tailwind CSS + Shadcn ui
 - React context api for state management
+
 ## How it Works
 
 - Each client, product, and invoice is stored in Firebase Firestore.
@@ -28,6 +27,7 @@ A simple billing management system designed for a client running a small scale b
 - The system calculates item totals, grand total, paid amount, and remaining balance automatically.
 - The system assign invoice status such as **Paid**, **Partially Paid**, **Unpaid** by comparing paid amount and grandTotal.
 - Users can view and filter invoices directly in the dashboard, edit them anytime, and track outstanding balances.
+
 ## Key Learnings
 
 - Managing shared state across multiple contexts, including invoices, clients, and products.
@@ -36,8 +36,6 @@ A simple billing management system designed for a client running a small scale b
 - Building a modular interface with reusable table and form components using shadcn/ui.
 - Working with TypeScript generics to update form fields safely.
 - Seeing real-time TypeScript errors during development when types or interfaces are defined incorrectly.
-
-
 
 ## Setup & Run
 
@@ -80,10 +78,9 @@ The app will be available at `http://localhost:3000`.
 
 This project is open source and available under the [MIT License](https://choosealicense.com/licenses/mit/)
 
-
 ## Links
 
-[![Portfolio](https://img.shields.io/badge/Portfolio-000000?style=for-the-badge&logo=About.me&logoColor=white)](https://codelikeba56.github.io/Sameer-Portfolio/)
+[![Portfolio](https://img.shields.io/badge/Portfolio-000000?style=for-the-badge&logo=About.me&logoColor=white)](https://sameer-shamshad-portfolio.vercel.app/)
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=LinkedIn&logoColor=white)](https://www.linkedin.com/in/sameer-shamshad/)
 
