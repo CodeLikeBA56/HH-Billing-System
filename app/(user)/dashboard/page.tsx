@@ -25,8 +25,10 @@ import { Client } from "@/types";
 import { useInvoiceContext } from "@/contexts/InvoiceProvider";
 import { useNotification } from "@/contexts/NotificationProvider";
 import EditClientDialog from "@/components/clients/EditClientDialog";
+import { useRouter } from "next/navigation";
 
 const ManageClientPage: React.FC = () => {
+  const router = useRouter();
   const { pushNotification } = useNotification();
   const { getReceivableBalance } = useInvoiceContext();
   const { clients, addClient, deleteClient, loading, error } = useClientContext();
@@ -142,7 +144,15 @@ const ManageClientPage: React.FC = () => {
                     <span className="material-symbols-outlined text-green-500">edit</span>
                   </button>
                 </TableCell>
-                <TableCell>{client?.name}</TableCell>
+                <TableCell className="p-0">
+                  <Button
+                    type="button"
+                    className="w-full rounded-none! bg-transparent! text-primary-text!"
+                    onClick={() => router.push(`/dashboard/create-invoice?client=${client.uid}`)}
+                  >
+                    {client?.name}
+                  </Button>
+                </TableCell>
                 <TableCell>{client?.phone}</TableCell>
                 <TableCell>{client?.location}</TableCell>
                 <TableCell>{getReceivableBalance(client.uid!)}</TableCell>

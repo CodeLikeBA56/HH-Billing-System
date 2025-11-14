@@ -40,15 +40,19 @@ A simple billing management system designed for a client running a small scale b
 ## Setup & Run
 
 #### 1. Clone the repository
+
     git clone https://github.com/CodeLikeBA56/hh-billing-system.git
 
 #### 2. Navigate into the project folder
+
     cd hh-billing-system
 
 #### 3. Install dependencies
+
     npm install
 
 #### 4. Create a .env file
+
 Add all Firebase environment variables used in this project.  
 These values allow the app to connect with Firebase services in the browser.
 
@@ -71,9 +75,11 @@ Switch this to "production" when deploying.
     NODE_ENV=development
 
 #### 5. Start the development server
+
     npm run dev
 
 The app will be available at `http://localhost:3000`.
+
 ## License
 
 This project is open source and available under the [MIT License](https://choosealicense.com/licenses/mit/)

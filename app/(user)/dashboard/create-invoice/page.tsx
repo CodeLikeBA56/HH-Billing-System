@@ -1,5 +1,5 @@
 "use client";
-import { useParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState, useCallback, useMemo } from "react";
@@ -25,8 +25,8 @@ import { useProductContext } from "@/contexts/ProductProvider";
 import { useInvoiceContext } from "@/contexts/InvoiceProvider";
 
 export default function CreateInvoice() {
-  const params = useParams();
-  const clientId = Array.isArray(params?.id) ? params.id[0] : params?.id || "";
+  const params = useSearchParams();
+  const clientId = params.get("client") || "";
 
   const { clients } = useClientContext();
   const { products } = useProductContext();
