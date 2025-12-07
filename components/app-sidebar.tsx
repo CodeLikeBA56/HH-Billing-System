@@ -62,8 +62,8 @@ const AppSidebar: React.FC = () => {
     <Sidebar side="left" variant="sidebar" collapsible="offcanvas">
       {/* Header */}
       <SidebarHeader>
-        <h3 className="text-[20px] text-main p-2 sm:py-5 font-extrabold font-serif">
-          {"HH Men's Wear"}
+        <h3 className="text-[28px] text-main text-center p-2 sm:py-5 font-extrabold tracking-wide font-serif">
+          HH
         </h3>
       </SidebarHeader>
 
@@ -95,7 +95,7 @@ const AppSidebar: React.FC = () => {
           />
           <div>
             <h1 className="text-primary-text font-medium">
-              {userInfo?.providerData?.[0]?.displayName || "Hamza Hussnain"}
+              {userInfo?.providerData?.[0]?.displayName || "Hamza Husnain"}
             </h1>
             <span className="text-secondary-text text-sm">
               {userInfo?.email?.split("@")?.[0] || "hamza"}

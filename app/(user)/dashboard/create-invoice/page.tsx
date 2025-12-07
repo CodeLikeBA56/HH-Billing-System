@@ -1,5 +1,4 @@
 "use client";
-import { useParams } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState, useCallback, useMemo } from "react";
@@ -19,21 +18,21 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { PlusCircle } from "lucide-react";
-import { InvoiceItem, size } from "@/types";
+import { InvoiceItem } from "@/types";
 import { useClientContext } from "@/contexts/ClientProvider";
-import { useProductContext } from "@/contexts/ProductProvider";
 import { useInvoiceContext } from "@/contexts/InvoiceProvider";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function CreateInvoice() {
-  const params = useParams();
-  const clientId = Array.isArray(params?.id) ? params.id[0] : params?.id || "";
-
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const clientIdFromQuery = searchParams.get("clientId") || "";
+  
   const { clients } = useClientContext();
-  const { products } = useProductContext();
   const { addInvoice } = useInvoiceContext();
 
   const [paidAmount, setPaidAmount] = useState<number>(0);
-  const [selectedClientId, setSelectedClientId] = useState<string>(clientId);
+  const [selectedClientId, setSelectedClientId] = useState<string>(clientIdFromQuery);
 
   const selectedClientInfo = useMemo(() => {
     if (!selectedClientId || !clients.length) return null;
@@ -46,7 +45,7 @@ export default function CreateInvoice() {
       productId: "",
       productName: "",
       designNumber: "",
-      size: "S",
+      size: "",
       quantity: 1,
       price: 0,
       total: 0,
@@ -60,7 +59,7 @@ export default function CreateInvoice() {
         productId: "",
         productName: "",
         designNumber: "",
-        size: "S",
+        size: "",
         quantity: 1,
         price: 0,
         total: 0,
@@ -76,15 +75,6 @@ export default function CreateInvoice() {
     const updated = [...items];
     updated[index][field] = value;
 
-    if (field === "productId") {
-      const product = products.find((p) => p.uid === value);
-      if (product) {
-        updated[index].price = product.price;
-        updated[index].productName = product.name;
-        updated[index].designNumber = product.designNumber;
-      }
-    }
-
     updated[index].total = updated[index].quantity * updated[index].price;
     setItems(updated);
   };
@@ -95,6 +85,16 @@ export default function CreateInvoice() {
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!selectedClientId) {
+      alert("Please select a client first!");
+      return;
+    }
+
+    if (items.some(item => !item.productName.trim())) {
+      alert("Please enter product name for all items!");
+      return;
+    }
 
     const billNo = `INV-${Date.now()}`;
 
@@ -108,7 +108,8 @@ export default function CreateInvoice() {
     });
 
     alert("Invoice added successfully!");
-  }, [addInvoice, grandTotal, items, paidAmount, selectedClientId]);
+    router.push("/dashboard/invoice");
+  }, [addInvoice, grandTotal, items, paidAmount, selectedClientId, router]);
 
   return (
     <>
@@ -177,7 +178,7 @@ export default function CreateInvoice() {
               <TableHead className="text-center w-25">Design No</TableHead>
               <TableHead className="text-center w-18">Size</TableHead>
               <TableHead className="text-center w-18">Qty</TableHead>
-              <TableHead className="text-cente w-25">Price</TableHead>
+              <TableHead className="text-center w-25">Price</TableHead>
               <TableHead className="text-center w-70">Total</TableHead>
             </TableRow>
           </TableHeader>
@@ -194,43 +195,34 @@ export default function CreateInvoice() {
                   </button>
                 </TableCell>
                 <TableCell className="text-center">
-                  <Select
-                    value={item.productId}
-                    onValueChange={(val) => handleChange(index, "productId", val)}
-                  >
-                    <SelectTrigger className="bg-transparent! text-primary-text! w-full! focus:ring-0!">
-                      <SelectValue placeholder="Select product" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {products.map((p) => (
-                        <SelectItem key={p.uid} value={p.uid!}>
-                          {p.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <Input
+                    type="text"
+                    value={item.productName}
+                    onChange={(e) => handleChange(index, "productName", e.target.value)}
+                    placeholder="Enter product name"
+                    className="bg-transparent! text-primary-text! w-full! border-0 focus:ring-0!"
+                    required
+                  />
                 </TableCell>
 
                 <TableCell className="text-center">
-                  {item.designNumber || "-"}
+                  <Input
+                    type="text"
+                    value={item.designNumber}
+                    onChange={(e) => handleChange(index, "designNumber", e.target.value)}
+                    placeholder="Enter design number"
+                    className="bg-transparent! text-primary-text! w-full! text-center border-0 focus:ring-0!"
+                  />
                 </TableCell>
 
-                <TableCell>
-                  <Select
+                <TableCell className="text-center">
+                  <Input
+                    type="text"
                     value={item.size}
-                    onValueChange={(val) => handleChange(index, "size", val as size)}
-                  >
-                    <SelectTrigger className="bg-transparent! text-primary-text! w-full! focus:ring-0!">
-                      <SelectValue placeholder="Select size" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {["XS", "S", "M", "L", "XL"].map((s) => (
-                        <SelectItem key={s} value={s}>
-                          {s}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    onChange={(e) => handleChange(index, "size", e.target.value)}
+                    placeholder="Enter size (e.g., S-L, 16-32)"
+                    className="bg-transparent! text-primary-text! w-full! text-center border-0 focus:ring-0!"
+                  />
                 </TableCell>
 
                 <TableCell>
@@ -249,8 +241,9 @@ export default function CreateInvoice() {
                     min={0}
                     type="number"
                     value={item.price}
-                    onChange={(e) =>handleChange(index, "price", +e.target.value)}
+                    onChange={(e) => handleChange(index, "price", +e.target.value)}
                     className="w-25 text-center border-0 focus:ring-0!"
+                    required
                   />
                 </TableCell>
 

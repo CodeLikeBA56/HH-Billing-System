@@ -148,7 +148,7 @@ const ManageClientPage: React.FC = () => {
                   <Button
                     type="button"
                     className="w-full rounded-none! bg-transparent! text-primary-text!"
-                    onClick={() => router.push(`/dashboard/create-invoice/${client.uid}`)}
+                    onClick={() => router.push(`/dashboard/create-invoice?clientId=${client.uid}`)}
                   >
                     {client?.name}
                   </Button>

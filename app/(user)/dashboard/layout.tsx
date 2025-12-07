@@ -16,7 +16,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                 <SidebarTrigger />
 
                 <h3 className="text-2xl text-main font-extrabold font-serif mx-auto">
-                {"HH Men's Wear"}
+                {"HH Billing System"}
                 </h3>
 
                 <button

@@ -22,7 +22,6 @@ import { PlusCircle } from "lucide-react";
 import { deepEqual } from "@/hooks/deepEqual";
 import { InvoiceItem, Invoice } from "@/types";
 import { useClientContext } from "@/contexts/ClientProvider";
-import { useProductContext } from "@/contexts/ProductProvider";
 import { useInvoiceContext } from "@/contexts/InvoiceProvider";
 import { useNotification } from "@/contexts/NotificationProvider";
 
@@ -33,7 +32,6 @@ const EditInvoicePage = () => {
     const invoiceId = Array.isArray(params?.id) ? params.id[0] : params?.id || "";
 
     const { clients } = useClientContext();
-    const { products } = useProductContext();
     const { invoices, updateInvoice, deleteInvoice } = useInvoiceContext();
 
     const existingInvoice = useMemo(() => {
@@ -56,15 +54,6 @@ const EditInvoicePage = () => {
         const updatedItems = [...invoice.items];
         updatedItems[index] = { ...updatedItems[index], [field]: value };
 
-        if (field === "productId") {
-            const product = products.find((p) => p.uid === value);
-            if (product) {
-                updatedItems[index].price = product.price;
-                updatedItems[index].productName = product.name;
-                updatedItems[index].designNumber = product.designNumber;
-            }
-        }
-
         updatedItems[index].total = updatedItems[index].quantity * updatedItems[index].price;
         setInvoice({ ...invoice, items: updatedItems });
     };
@@ -80,7 +69,7 @@ const EditInvoicePage = () => {
                     productId: "",
                     productName: "",
                     designNumber: "",
-                    size: "S",
+                    size: "",
                     quantity: 1,
                     price: 0,
                     total: 0,
@@ -227,39 +216,32 @@ const EditInvoicePage = () => {
                 </button>
               </TableCell>
               <TableCell>
-                <Select
-                  value={item.productId}
-                  onValueChange={(val) => handleChangeItem(index, "productId", val)}
-                >
-                  <SelectTrigger className="bg-transparent! text-primary-text! w-full! focus:ring-0!">
-                    <SelectValue placeholder="Select product" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {products.map((p) => (
-                      <SelectItem key={p.uid} value={p.uid!}>
-                        {p.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <Input
+                  type="text"
+                  value={item.productName}
+                  onChange={(e) => handleChangeItem(index, "productName", e.target.value)}
+                  placeholder="Enter product name"
+                  className="bg-transparent! text-primary-text! w-full! border-0 focus:ring-0!"
+                  required
+                />
               </TableCell>
-              <TableCell className="text-center">{item.designNumber}</TableCell>
-              <TableCell>
-                <Select
+              <TableCell className="text-center">
+                <Input
+                  type="text"
+                  value={item.designNumber}
+                  onChange={(e) => handleChangeItem(index, "designNumber", e.target.value)}
+                  placeholder="Enter design number"
+                  className="bg-transparent! text-primary-text! w-full! text-center border-0 focus:ring-0!"
+                />
+              </TableCell>
+              <TableCell className="text-center">
+                <Input
+                  type="text"
                   value={item.size}
-                  onValueChange={(val) => handleChangeItem(index, "size", val)}
-                >
-                  <SelectTrigger className="bg-transparent! text-primary-text! w-full! focus:ring-0!">
-                    <SelectValue placeholder="Size" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {["XS", "S", "M", "L", "XL"].map((s) => (
-                      <SelectItem key={s} value={s}>
-                        {s}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                  onChange={(e) => handleChangeItem(index, "size", e.target.value)}
+                  placeholder="Enter size (e.g., S-L, 16-32)"
+                  className="bg-transparent! text-primary-text! w-full! text-center border-0 focus:ring-0!"
+                />
               </TableCell>
               <TableCell>
                 <Input

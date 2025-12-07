@@ -23,7 +23,7 @@ export interface InvoiceItem {
   productId: string; // reference to Product.uid
   productName: string;
   designNumber: string;
-  size: size;
+  size: string; // Changed to string to allow custom sizes like "S-L", "16-32", etc.
   quantity: number;
   price: number;
   total: number;
