@@ -33,13 +33,13 @@ const InvoiceRow = React.memo(({ invoice }: { invoice: Invoice }) => {
   
     return (
       <TableRow key={invoice.uid}>
-        <TableCell>
+        <TableCell className="p-0 w-[60px]">
           <button
             type="button"
             onClick={() => router.push(`/dashboard/invoice/${invoice.uid}`)}
-            className="material-symbols-outlined w-full! text-green-500! rounded-none! bg-transparent!"
+            className="bg-transparent! mx-auto"
           >
-            edit
+            <span className="material-symbols-outlined text-green-500">edit</span>
           </button>
         </TableCell>
 
@@ -59,7 +59,7 @@ const InvoiceRow = React.memo(({ invoice }: { invoice: Invoice }) => {
         <TableCell>{invoice.remainingBalance}</TableCell>
 
         <TableCell>
-            { invoice.createdAt ? invoice.createdAt.toLocaleDateString() : "-" }
+          {invoice.createdAt ? invoice.createdAt.toLocaleDateString() : "-"}
         </TableCell>
       </TableRow>
     );

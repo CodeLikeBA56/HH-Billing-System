@@ -29,10 +29,11 @@ function CreateInvoiceForm() {
   const clientIdFromQuery = searchParams.get("clientId") || "";
   
   const { clients } = useClientContext();
-  const { addInvoice } = useInvoiceContext();
+  const { addInvoice, getNextBillNumber } = useInvoiceContext();
 
   const [paidAmount, setPaidAmount] = useState<number>(0);
   const [selectedClientId, setSelectedClientId] = useState<string>(clientIdFromQuery);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const selectedClientInfo = useMemo(() => {
     if (!selectedClientId || !clients.length) return null;
@@ -86,6 +87,8 @@ function CreateInvoiceForm() {
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (isSubmitting) return;
+
     if (!selectedClientId) {
       alert("Please select a client first!");
       return;
@@ -96,20 +99,30 @@ function CreateInvoiceForm() {
       return;
     }
 
-    const billNo = `INV-${Date.now()}`;
+    try {
+      setIsSubmitting(true);
+      
+      // Fetch next bill number from Firebase
+      const billNo = await getNextBillNumber();
 
-    await addInvoice({
-      billNo,
-      customerId: selectedClientId,
-      items,
-      grandTotal,
-      paidAmount,
-      remainingBalance: grandTotal - paidAmount,
-    });
+      await addInvoice({
+        billNo,
+        customerId: selectedClientId,
+        items,
+        grandTotal,
+        paidAmount,
+        remainingBalance: grandTotal - paidAmount,
+      });
 
-    alert("Invoice added successfully!");
-    router.push("/dashboard/invoice");
-  }, [addInvoice, grandTotal, items, paidAmount, selectedClientId, router]);
+      alert("Invoice added successfully!");
+      router.push("/dashboard/invoice");
+    } catch (error) {
+      console.error("Error creating invoice:", error);
+      alert("Failed to create invoice. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, [addInvoice, getNextBillNumber, grandTotal, items, paidAmount, selectedClientId, router, isSubmitting]);
 
   return (
     <>
@@ -125,7 +138,7 @@ function CreateInvoiceForm() {
         <div className="gap-3 md:gap-15 flex flex-col sm:flex-row px-4 sm:px-6 mb-8 overflow-x-hidden">
           <div className="gap-2 flex flex-col">
             <label className="text-sm text-primary-color">Select Client</label>
-            <Select value={selectedClientId} onValueChange={setSelectedClientId}>
+            <Select value={selectedClientId} onValueChange={setSelectedClientId} disabled={isSubmitting}>
               <SelectTrigger className="w-fit bg-transparent! text-primary-text! border! border-border!">
                 <SelectValue placeholder="Select client" />
               </SelectTrigger>
@@ -159,6 +172,7 @@ function CreateInvoiceForm() {
             type="button"
             variant="outline"
             onClick={handleAddRow}
+            disabled={isSubmitting}
             className="flex items-center gap-2"
           >
             <PlusCircle size={16} /> Add Item
@@ -189,6 +203,7 @@ function CreateInvoiceForm() {
                   <button 
                     type="button" 
                     onClick={() => handleRemoveRow(index)}
+                    disabled={isSubmitting}
                     className="w-[59px]! bg-transparent! rounded-none!"
                   >
                     <span className="material-symbols-outlined text-red-500 text-[21px]! font-bold!">close</span>
@@ -202,6 +217,7 @@ function CreateInvoiceForm() {
                     placeholder="Enter product name"
                     className="bg-transparent! text-primary-text! w-full! border-0 focus:ring-0!"
                     required
+                    disabled={isSubmitting}
                   />
                 </TableCell>
 
@@ -212,6 +228,7 @@ function CreateInvoiceForm() {
                     onChange={(e) => handleChange(index, "designNumber", e.target.value)}
                     placeholder="Enter design number"
                     className="bg-transparent! text-primary-text! w-full! text-center border-0 focus:ring-0!"
+                    disabled={isSubmitting}
                   />
                 </TableCell>
 
@@ -222,6 +239,7 @@ function CreateInvoiceForm() {
                     onChange={(e) => handleChange(index, "size", e.target.value)}
                     placeholder="Enter size (e.g., S-L, 16-32)"
                     className="bg-transparent! text-primary-text! w-full! text-center border-0 focus:ring-0!"
+                    disabled={isSubmitting}
                   />
                 </TableCell>
 
@@ -233,6 +251,7 @@ function CreateInvoiceForm() {
                     value={item.quantity}
                     className="w-18 text-center border-0 focus:ring-0!"
                     onChange={(e) => handleChange(index, "quantity", +e.target.value)}
+                    disabled={isSubmitting}
                   />
                 </TableCell>
 
@@ -244,6 +263,7 @@ function CreateInvoiceForm() {
                     onChange={(e) => handleChange(index, "price", +e.target.value)}
                     className="w-25 text-center border-0 focus:ring-0!"
                     required
+                    disabled={isSubmitting}
                   />
                 </TableCell>
 
@@ -273,14 +293,19 @@ function CreateInvoiceForm() {
               className="w-20! sm:w-28! shadow-none! border-0 border-b-2 border-border rounded-none
                 text-primary-text focus-visible:ring-0 focus:border-main bg-transparent"
               required
+              disabled={isSubmitting}
             />
           </div>
         </div>
 
         {
           items.length > 0 ? (
-            <Button type="submit" className="mt-8 ml-auto mr-4 sm:mr-6 py-6 px-8 font-bold!">
-              Save Invoice
+            <Button 
+              type="submit" 
+              disabled={isSubmitting}
+              className="mt-8 ml-auto mr-4 sm:mr-6 py-6 px-8 font-bold!"
+            >
+              {isSubmitting ? "Creating..." : "Save Invoice"}
             </Button>
           ) : (
             <p className="text-red-500 px-4 sm:px-6 font-bold mt-[-15px]">Invoice must have one item to proceed!</p>

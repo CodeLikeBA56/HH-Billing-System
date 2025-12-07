@@ -2,7 +2,7 @@
 import { auth } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
 import { useNotification } from "./NotificationProvider";
-import { signOut, User, updateProfile, updateEmail, updatePassword } from "firebase/auth";
+import { signOut, User, updateProfile, updateEmail, updatePassword, onAuthStateChanged } from "firebase/auth";
 import { createContext, useCallback, useContext, useEffect, useState, ReactNode } from "react";
 
 interface AdminProps {
@@ -13,6 +13,7 @@ interface AdminProps {
 
 interface AuthContextType {
   userInfo: User | null;
+  loading: boolean;
   logout: () => Promise<void>;
   setUserInfo: React.Dispatch<React.SetStateAction<User | null>>;
   updateAdmin: (data: AdminProps) => Promise<void>;
@@ -25,20 +26,19 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   const Router = useRouter();
   const { pushNotification } = useNotification();
 
-  const [userInfo, setUserInfo] = useState(() => {
-    try {
-      const storedUser = localStorage.getItem("userInfo");
-      return storedUser ? JSON.parse(storedUser) : null;
-    } catch {
-      return null;
-    }
-  });
+  const [userInfo, setUserInfo] = useState<User | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
   
+  // Listen to Firebase Auth state changes
   useEffect(() => {
-    if (!userInfo) return;
-   
-    localStorage.setItem("userInfo", JSON.stringify(userInfo));
-  }, [userInfo]);
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUserInfo(user);
+      setLoading(false);
+    });
+
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
+  }, []);
 
   const updateAdmin = useCallback(async ({ name, email, password } : AdminProps) => {
       const currentUser = auth.currentUser;
@@ -80,8 +80,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   const logout = useCallback(async () => {
     try {
       await signOut(auth);
-      localStorage.removeItem("userInfo");
-      setUserInfo(null);
+      // No need to manually set userInfo to null - onAuthStateChanged will handle it
       pushNotification("info", "Logged out successfully!");
       Router.push("/");
     } catch (error: unknown) {
@@ -100,7 +99,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{ userInfo, setUserInfo, updateAdmin, logout }}
+      value={{ userInfo, loading, setUserInfo, updateAdmin, logout }}
     >
       {children}
     </AuthContext.Provider>

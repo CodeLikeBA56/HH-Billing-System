@@ -67,12 +67,13 @@ const ClientProvider = ({ children }: { children: ReactNode }) => {
     }, [userInfo?.uid]);
 
   // Add client
-    const addClient = useCallback(async (client: { name: string; phone: string }) => {
+    const addClient = useCallback(async (client: { name: string; phone: string; location?: string }) => {
         try {
             setError(null);
             await addDoc(collection(db, "clients"), {
                 name: client.name.trim(),
                 phone: client.phone.trim(),
+                location: client.location?.trim() || "",
                 createdAt: serverTimestamp(),
                 updatedAt: serverTimestamp(),
             });

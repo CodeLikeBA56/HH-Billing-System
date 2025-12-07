@@ -1,12 +1,9 @@
 "use client"
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import React, { ReactNode, useState } from 'react';
+import React from 'react';
 import { useTheme } from "@/contexts/ThemeProvider";
 
 const Navigation: React.FC = () => {
   const { toggleTheme } = useTheme();
-  const [toggleNavbar, setToggleNavbar] = useState(false);
 
   return (
     <nav 

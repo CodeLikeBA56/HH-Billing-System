@@ -2,11 +2,12 @@
 import React, { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useInvoiceContext } from "@/contexts/InvoiceProvider";
+import { useClientContext } from "@/contexts/ClientProvider";
 import {
   Table,
   TableBody,
-  TableCell,
   TableHead,
   TableHeader,
   TableRow,
@@ -33,41 +34,71 @@ const filters: Filters[] = [
 const ManageInvoicePage: React.FC = () => {
   const router = useRouter();
   const { invoices } = useInvoiceContext();
+  const { getCustomerName } = useClientContext();
   const [activeFilter, setActiveFilter] = useState<InvoiceFilter>("all");
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   const handleCreateInvoice = () => {
     router.push(`/dashboard/create-invoice`);
   };
 
-  // Filtering logic
+  // Filtering and search logic
   const filteredInvoices = useMemo(() => {
     if (!invoices) return [];
+    
+    // First apply status filter
+    let statusFiltered = invoices;
     switch (activeFilter) {
       case "paid":
-        return invoices.filter(
+        statusFiltered = invoices.filter(
           (invoice) => invoice.remainingBalance === 0 && invoice.paidAmount > 0
         );
+        break;
       case "partial":
-        return invoices.filter(
+        statusFiltered = invoices.filter(
           (invoice) =>
             invoice.remainingBalance > 0 && invoice.paidAmount > 0
         );
+        break;
       case "unpaid":
-        return invoices.filter(
+        statusFiltered = invoices.filter(
           (invoice) =>
             invoice.remainingBalance > 0 && invoice.paidAmount === 0
         );
+        break;
       default:
-        return invoices;
+        statusFiltered = invoices;
     }
-  }, [invoices, activeFilter]);
+    
+    // Then apply search filter
+    if (!searchQuery.trim()) {
+      return statusFiltered;
+    }
+    
+    const query = searchQuery.toLowerCase().trim();
+    return statusFiltered.filter((invoice) => {
+      const customerName = getCustomerName(invoice.customerId).toLowerCase();
+      const billNo = invoice.billNo.toLowerCase();
+      
+      return customerName.includes(query) || billNo.includes(query);
+    });
+  }, [invoices, activeFilter, searchQuery, getCustomerName]);
 
   return (
     <div>
       {/* Header */}
-      <header className="flex justify-between items-center px-5 py-5">
+      <header className="flex justify-between items-center px-5 py-5 gap-4">
         <h1 className="text-2xl font-bold text-main">Invoices</h1>
-        <Button onClick={handleCreateInvoice}>Create Invoice</Button>
+        <div className="flex items-center gap-3 flex-1 max-w-md ml-auto">
+          <Input
+            type="text"
+            placeholder="Search by customer name or bill no..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="flex-1"
+          />
+          <Button onClick={handleCreateInvoice}>Create Invoice</Button>
+        </div>
       </header>
 
       {/* Filter Buttons */}
@@ -93,39 +124,28 @@ const ManageInvoicePage: React.FC = () => {
       </section>
 
       {/* Table */}
-      <Table
-        className="
-        [&_td]:p-0
-        [&_th]:p-0 [&_th]:px-3 
-        sm:[&_td]:p-0 [&_td]:px-2
-        sm:[&_th]:p-0"
-      >
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-[60px]">-</TableHead>
-            <TableHead>Bill No</TableHead>
-            <TableHead>Customer</TableHead>
-            <TableHead>Grand Total</TableHead>
-            <TableHead>Paid</TableHead>
-            <TableHead>Remaining</TableHead>
-            <TableHead>Date</TableHead>
-          </TableRow>
-        </TableHeader>
-
-        <TableBody>
-          {filteredInvoices.length > 0 ? (
-            filteredInvoices.map((invoice: Invoice) => (
-              <InvoiceRow key={invoice.uid} invoice={invoice} />
-            ))
-          ) : (
+      {filteredInvoices.length > 0 ? (
+        <Table>
+          <TableHeader>
             <TableRow>
-              <TableCell colSpan={7} className="text-center py-5!">
-                No invoices found
-              </TableCell>
+              <TableHead className="p-0">-</TableHead>
+              <TableHead>Bill No</TableHead>
+              <TableHead>Customer</TableHead>
+              <TableHead>Grand Total</TableHead>
+              <TableHead>Paid</TableHead>
+              <TableHead>Remaining</TableHead>
+              <TableHead>Date</TableHead>
             </TableRow>
-          )}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {filteredInvoices.map((invoice: Invoice) => (
+              <InvoiceRow key={invoice.uid} invoice={invoice} />
+            ))}
+          </TableBody>
+        </Table>
+      ) : (
+        <p className="px-5 py-3 text-secondary-text">No invoices found.</p>
+      )}
     </div>
   );
 };

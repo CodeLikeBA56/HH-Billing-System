@@ -9,6 +9,11 @@ import {
   collection,
   onSnapshot,
   serverTimestamp,
+  query,
+  orderBy,
+  limit,
+  getDocs,
+  where,
 } from "firebase/firestore";
 import {
   useState,
@@ -28,6 +33,7 @@ interface InvoiceContextProps {
   updateInvoice: (id: string, updates: Partial<Invoice>) => Promise<void>;
   deleteInvoice: (id: string) => Promise<void>;
   getReceivableBalance: (uid: string) => number;
+  getNextBillNumber: () => Promise<string>;
 }
 
 const InvoiceContext = createContext<InvoiceContextProps | undefined>(undefined);
@@ -110,6 +116,69 @@ const InvoiceProvider = ({ children }: { children: ReactNode }) => {
     }, 0);
   }, [invoices]);
 
+  const getNextBillNumber = useCallback(async (): Promise<string> => {
+    try {
+      // Query all invoices ordered by createdAt descending to get the latest
+      const invoicesQuery = query(
+        collection(db, "invoices"),
+        orderBy("createdAt", "desc"),
+        limit(1)
+      );
+      
+      const querySnapshot = await getDocs(invoicesQuery);
+      
+      if (querySnapshot.empty) {
+        // No invoices exist, start with BILL-001
+        return "BILL-001";
+      }
+      
+      // Get the latest invoice
+      const latestInvoice = querySnapshot.docs[0].data() as Invoice;
+      const latestBillNo = latestInvoice.billNo || "";
+      
+      // Extract numeric part from bill number (handles formats like "BILL-001", "INV-123", "1", etc.)
+      const match = latestBillNo.match(/(\d+)$/);
+      let maxNumber = 0;
+      
+      if (match) {
+        maxNumber = parseInt(match[1], 10);
+      } else {
+        // If no numeric part found, check if it's just a number
+        const numericMatch = latestBillNo.match(/^\d+$/);
+        if (numericMatch) {
+          maxNumber = parseInt(latestBillNo, 10);
+        }
+      }
+      
+      // If we couldn't parse a number, check all invoices to find the highest bill number
+      if (maxNumber === 0) {
+        const allInvoicesQuery = query(collection(db, "invoices"));
+        const allSnapshot = await getDocs(allInvoicesQuery);
+        
+        allSnapshot.docs.forEach((docSnap) => {
+          const invoiceData = docSnap.data() as Invoice;
+          const billNo = invoiceData.billNo || "";
+          const match = billNo.match(/(\d+)$/);
+          if (match) {
+            const num = parseInt(match[1], 10);
+            if (num > maxNumber) {
+              maxNumber = num;
+            }
+          }
+        });
+      }
+      
+      // Generate next bill number
+      const nextNumber = maxNumber + 1;
+      return `BILL-${nextNumber.toString().padStart(3, '0')}`;
+    } catch (err) {
+      console.error("Error getting next bill number:", err);
+      // Fallback: use invoice count + 1
+      const nextNumber = invoices.length + 1;
+      return `BILL-${nextNumber.toString().padStart(3, '0')}`;
+    }
+  }, [invoices]);
+
   return (
     <InvoiceContext.Provider
       value={{
@@ -120,6 +189,7 @@ const InvoiceProvider = ({ children }: { children: ReactNode }) => {
         updateInvoice,
         deleteInvoice,
         getReceivableBalance,
+        getNextBillNumber,
       }}
     >
       {children}

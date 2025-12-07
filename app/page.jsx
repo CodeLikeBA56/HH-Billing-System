@@ -5,14 +5,12 @@ import { auth } from '@/lib/firebase';
 import styles from './auth.module.css';
 import { useRouter } from 'next/navigation';
 import Navigation from '@/components/Navigation.tsx';
-import { useAuthContext } from '@/contexts/AuthProvider';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { useNotification } from '@/contexts/NotificationProvider';
 import { Input } from '@/components/ui/input';
 
 const SignIn = () => {
   const Router = useRouter();
-  const { setUserInfo } = useAuthContext();
   const{ pushNotification } = useNotification();
   
   const [email, setEmail] = useState("");
@@ -37,10 +35,14 @@ const SignIn = () => {
   
       if (user.uid === process.env.NEXT_PUBLIC_FIREBASE_ADMIN_UID) {
         pushNotification("success", "Logged in successfully!");
-        setUserInfo(user);
+        // onAuthStateChanged will automatically update userInfo, no need to set it manually
         Router.push("/dashboard/");
         setEmail("");
         setPassword("");
+      } else {
+        // If not the admin user, sign them out
+        await signOut(auth);
+        pushNotification("error", "Access denied. Admin access required.");
       }
     } catch (error) {
       if (error.code) {
