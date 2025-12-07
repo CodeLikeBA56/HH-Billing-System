@@ -8,13 +8,12 @@ import {
   SidebarHeader,
 } from "@/components/ui/sidebar";
 import React from "react";
-import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import styles from "./app-sidebar.module.css";
-import { useAuthContext } from "@/contexts/AuthProvider";
 import { useClientContext } from "@/contexts/ClientProvider";
 import { useProductContext } from "@/contexts/ProductProvider";
 import { useInvoiceContext } from "@/contexts/InvoiceProvider";
+import UserProfileMenu from "@/components/auth/UserProfileMenu";
 
 interface SidebarLinkProps {
   label: string;
@@ -53,7 +52,6 @@ const SidebarLink: React.FC<SidebarLinkProps> = React.memo(({ label, icon, href,
 });
 
 const AppSidebar: React.FC = () => {
-  const { userInfo } = useAuthContext();
   const { clients } = useClientContext();
   const { products } = useProductContext();
   const { invoices } = useInvoiceContext();
@@ -84,24 +82,7 @@ const AppSidebar: React.FC = () => {
       {/* Footer */}
       <SidebarFooter>
         <span className="px-3">Version 1.0</span>
-
-        <div className="flex items-center gap-3 p-3">
-          <Image
-            src={userInfo?.photoURL || "/assets/No-Profile.webp"}
-            alt="HH"
-            width={40}
-            height={40}
-            className="rounded-full object-cover border"
-          />
-          <div>
-            <h1 className="text-primary-text font-medium">
-              {userInfo?.providerData?.[0]?.displayName || "Hamza Husnain"}
-            </h1>
-            <span className="text-secondary-text text-sm">
-              {userInfo?.email?.split("@")?.[0] || "hamza"}
-            </span>
-          </div>
-        </div>
+        <UserProfileMenu />
       </SidebarFooter>
     </Sidebar>
   );

@@ -52,7 +52,11 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         if (email) await updateEmail(currentUser, email);
         if (password) await updatePassword(currentUser, password);
 
-        setUserInfo({ ...currentUser });
+        // Reload user to get updated information
+        await currentUser.reload();
+        
+        // Update userInfo with the reloaded user
+        setUserInfo(auth.currentUser);
 
         pushNotification("success", "Profile updated successfully!");
       } catch (error: unknown) {
@@ -79,7 +83,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       localStorage.removeItem("userInfo");
       setUserInfo(null);
       pushNotification("info", "Logged out successfully!");
-      Router.push("/sign-in");
+      Router.push("/");
     } catch (error: unknown) {
       let errorMessage = "Logout failed";
 

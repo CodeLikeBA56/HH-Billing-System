@@ -1,7 +1,7 @@
 "use client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, Suspense } from "react";
 import {
   Select,
   SelectContent,
@@ -23,7 +23,7 @@ import { useClientContext } from "@/contexts/ClientProvider";
 import { useInvoiceContext } from "@/contexts/InvoiceProvider";
 import { useRouter, useSearchParams } from "next/navigation";
 
-export default function CreateInvoice() {
+function CreateInvoiceForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const clientIdFromQuery = searchParams.get("clientId") || "";
@@ -288,5 +288,17 @@ export default function CreateInvoice() {
         }
       </form>
     </>
+  );
+}
+
+export default function CreateInvoice() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center min-h-screen">
+        <p className="text-lg text-gray-500">Loading...</p>
+      </div>
+    }>
+      <CreateInvoiceForm />
+    </Suspense>
   );
 }
