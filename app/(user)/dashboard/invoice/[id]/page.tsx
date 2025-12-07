@@ -39,6 +39,8 @@ const EditInvoicePage = () => {
     }, [invoices, invoiceId]);
 
     const [invoice, setInvoice] = useState<Invoice | null>(existingInvoice || null);
+    const [isSaving, setIsSaving] = useState<boolean>(false);
+    const [isDeleting, setIsDeleting] = useState<boolean>(false);
 
     const customerId = invoice?.customerId;
 
@@ -98,31 +100,46 @@ const EditInvoicePage = () => {
     const isChanged = !deepEqual(invoice, existingInvoice);
 
     const handleSaveChanges = async () => {
-        if (!invoice || !isChanged) return;
+        if (!invoice || !isChanged || isSaving || isDeleting) return;
 
         if (invoice.paidAmount > invoice.grandTotal) {
           return pushNotification("warning", "The paid amount cannot be greater than the grand total.");
         }        
 
-        await updateInvoice(invoice.uid!, {
-            ...invoice,
-            grandTotal,
-            remainingBalance,
-            updatedAt: new Date(),
-        });
+        try {
+          setIsSaving(true);
+          await updateInvoice(invoice.uid!, {
+              ...invoice,
+              grandTotal,
+              remainingBalance,
+              updatedAt: new Date(),
+          });
 
-        router.push("/dashboard/invoice");
-        pushNotification("success", "Invoice updated successfully!");
+          pushNotification("success", "Invoice updated successfully!");
+          router.push("/dashboard/invoice");
+        } catch (error) {
+          console.error("Error updating invoice:", error);
+          pushNotification("error", "Failed to update invoice. Please try again.");
+        } finally {
+          setIsSaving(false);
+        }
     };
 
   const handleDelete = async () => {
-    if (!invoice) return;
+    if (!invoice || isDeleting || isSaving) return;
     
     const confirmDelete = confirm("Are you sure you want to delete this invoice?");
-    if (confirmDelete) {
+    if (!confirmDelete) return;
+
+    try {
+      setIsDeleting(true);
       await deleteInvoice(invoice.uid!);
       pushNotification("success", "Invoice deleted successfully!");
       router.push("/dashboard/invoice");
+    } catch (error) {
+      console.error("Error deleting invoice:", error);
+      pushNotification("error", "Failed to delete invoice. Please try again.");
+      setIsDeleting(false);
     }
   };
 
@@ -149,6 +166,7 @@ const EditInvoicePage = () => {
           <Select
             value={invoice.customerId}
             onValueChange={(val) => handleChangeField("customerId", val)}
+            disabled={isSaving || isDeleting}
           >
             <SelectTrigger className="w-fit bg-transparent! text-primary-text! border! border-border!">
               <SelectValue placeholder="Select client" />
@@ -176,6 +194,7 @@ const EditInvoicePage = () => {
           type="button"
           variant="outline"
           onClick={handleAddRow}
+          disabled={isSaving || isDeleting}
           className="flex items-center gap-2"
         >
           <PlusCircle size={16} /> Add Item
@@ -208,6 +227,7 @@ const EditInvoicePage = () => {
                 <button
                   type="button"
                   onClick={() => handleRemoveRow(index)}
+                  disabled={isSaving || isDeleting}
                   className="w-[59px]! bg-transparent!"
                 >
                   <span className="material-symbols-outlined text-red-500 text-[21px]! font-bold!">
@@ -223,6 +243,7 @@ const EditInvoicePage = () => {
                   placeholder="Enter product name"
                   className="bg-transparent! text-primary-text! w-full! border-0 focus:ring-0!"
                   required
+                  disabled={isSaving || isDeleting}
                 />
               </TableCell>
               <TableCell className="text-center">
@@ -232,6 +253,7 @@ const EditInvoicePage = () => {
                   onChange={(e) => handleChangeItem(index, "designNumber", e.target.value)}
                   placeholder="Enter design number"
                   className="bg-transparent! text-primary-text! w-full! text-center border-0 focus:ring-0!"
+                  disabled={isSaving || isDeleting}
                 />
               </TableCell>
               <TableCell className="text-center">
@@ -241,6 +263,7 @@ const EditInvoicePage = () => {
                   onChange={(e) => handleChangeItem(index, "size", e.target.value)}
                   placeholder="Enter size (e.g., S-L, 16-32)"
                   className="bg-transparent! text-primary-text! w-full! text-center border-0 focus:ring-0!"
+                  disabled={isSaving || isDeleting}
                 />
               </TableCell>
               <TableCell>
@@ -249,6 +272,7 @@ const EditInvoicePage = () => {
                   value={item.quantity}
                   onChange={(e) => handleChangeItem(index, "quantity", +e.target.value)}
                   className="w-25 text-center border-0 rounded-none! focus:ring-0!"
+                  disabled={isSaving || isDeleting}
                 />
               </TableCell>
               <TableCell>
@@ -257,6 +281,7 @@ const EditInvoicePage = () => {
                   value={item.price}
                   onChange={(e) => handleChangeItem(index, "price", +e.target.value)}
                   className="w-25 text-center border-0 rounded-none! focus:ring-0!"
+                  disabled={isSaving || isDeleting}
                 />
               </TableCell>
               <TableCell className="text-center min-w-[80px] font-bold text-primary-text">
@@ -287,6 +312,7 @@ const EditInvoicePage = () => {
             onChange={(e) => handleChangeField("paidAmount", +e.target.value)}
             className="w-20! sm:w-28! shadow-none! border-0 border-b-2 border-border rounded-none
                 text-primary-text focus-visible:ring-0 focus:border-main bg-transparent"
+            disabled={isSaving || isDeleting}
           />
         </div>
       </div>
@@ -297,13 +323,15 @@ const EditInvoicePage = () => {
             type="button"
             variant="outline" 
             onClick={handleDelete}
+            disabled={isDeleting || isSaving}
           >
-            Delete Invoice
+            {isDeleting ? "Deleting..." : "Delete Invoice"}
           </Button>
           <Button 
             type="button"
             variant="secondary" 
             onClick={handleDiscard}
+            disabled={isDeleting || isSaving}
           >
             Discard Changes
           </Button>
@@ -311,10 +339,10 @@ const EditInvoicePage = () => {
         <Button
           type="button"
           onClick={handleSaveChanges}
-          disabled={!isChanged}
+          disabled={!isChanged || isSaving || isDeleting}
           className="font-bold px-8 py-6"
         >
-          Save Changes
+          {isSaving ? "Saving..." : "Save Changes"}
         </Button>
       </div>
     </>

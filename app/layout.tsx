@@ -7,7 +7,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import AuthProvider from "@/contexts/AuthProvider";
 import ThemeProvider from "@/contexts/ThemeProvider";
 import ClientProvider from "@/contexts/ClientProvider";
-import ProductProvider from "@/contexts/ProductProvider";
 import NotificationProvider from "@/contexts/NotificationProvider";
 import InvoiceProvider from "@/contexts/InvoiceProvider";
 
@@ -34,13 +33,11 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <NotificationProvider>
             <AuthProvider>
               <ClientProvider>
-                <ProductProvider>
-                  <InvoiceProvider>
-                    <App>
-                      {children}
-                    </App>
-                  </InvoiceProvider>
-                </ProductProvider>
+                <InvoiceProvider>
+                  <App>
+                    {children}
+                  </App>
+                </InvoiceProvider>
               </ClientProvider>
             </AuthProvider>
           </NotificationProvider>
